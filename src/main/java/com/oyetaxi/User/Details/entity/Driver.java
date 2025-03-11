@@ -7,7 +7,7 @@ public class Driver implements  UserInterface{
         this.user = user;
     }
 
-    public String getId() {
+    public Long getId() {
         return user.getId();
     }
 

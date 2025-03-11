@@ -1,0 +1,29 @@
+services:
+  postgres-db:
+    image: postgres:15-alpine3.16
+    container_name: postgres_container
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: oyetaxi_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist database data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Run SQL on first run when there is table available
+
+  spring-app:
+    build: .  # Build Spring Boot app from the Dockerfile
+    container_name: springboot_container
+    depends_on:
+      - postgres-db  # Ensure PostgreSQL starts before Spring Boot
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/oyetaxi_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+
+volumes:
+  postgres_data:

@@ -4,14 +4,15 @@ package com.oyetaxi.User.Details.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "User")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
     private String type;
     private LocalDateTime createDt;
     private LocalDateTime updateDt;
@@ -19,6 +20,8 @@ public class User {
     private String mobileNumber;
     private String email;
     private String currentLoc;
+
+    @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ride> rides;
 
     public User(String name, String type, String mobileNumber, String email, String currentLoc) {
@@ -26,19 +29,24 @@ public class User {
         this.createDt = nowDate;
         this.updateDt = nowDate;
         this.name = name;
-        this.type=type;
+        this.type = type;
         this.mobileNumber = mobileNumber;
         this.email = email;
         this.currentLoc = currentLoc;
-        this.rides = null;
+        this.rides = new ArrayList<>();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateDt = LocalDateTime.now();
     }
 
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -105,9 +113,10 @@ public class User {
     public void setType(String type) {
         this.type = type;
     }
+
     @Override
     public String toString() {
-        return "Passenger{" +
+        return "User{" +
                 "id='" + id + '\'' +
                 ", createDt=" + createDt +
                 ", updateDt=" + updateDt +

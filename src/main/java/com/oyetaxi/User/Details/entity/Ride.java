@@ -3,46 +3,53 @@ package com.oyetaxi.User.Details.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "ride")
+@Table(name = "rides")
 public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
-    private String passengerId;
-    private String driverId;
+    private Long id;
+
+    private Long driverId;
     private String locationData;
     private String priceEstimate;
     private String distance;
 
-    public Ride(String passengerId, String driverId, String locationData, String priceEstimate, String distance) {
-        this.passengerId = passengerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "passenger_id", nullable = false)  // This creates a foreign key column in Ride
+    private User passenger;  // Reference to the User entity
+
+    public Ride() {
+    }
+
+    public Ride(User passenger, Long driverId, String locationData, String priceEstimate, String distance) {
+        this.passenger = passenger;
         this.driverId = driverId;
         this.locationData = locationData;
         this.priceEstimate = priceEstimate;
         this.distance = distance;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getPassengerId() {
-        return passengerId;
+    public User getPassenger() {
+        return passenger;
     }
 
-    public void setPassengerId(String passengerId) {
-        this.passengerId = passengerId;
+    public void setPassenger(User passenger) {
+        this.passenger = passenger;
     }
 
-    public String getDriverId() {
+    public Long getDriverId() {
         return driverId;
     }
 
-    public void setDriverId(String driverId) {
+    public void setDriverId(Long driverId) {
         this.driverId = driverId;
     }
 
