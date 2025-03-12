@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,15 +23,16 @@ public class UserService {
     @Autowired
     UserFactory userFactory;
 
-    public UserInterface createUser(String name, String type, String mobileNumber, String email, String currentLoc) {
+    public UserInterface createUser(
+            String name, String type, String mobileNumber, String email, String currentLoc) {
         User user = new User(name, type, mobileNumber, email, currentLoc);
         return userFactory.createUser(userRepo.save(user));
     }
 
-    public UserInterface getUserById(String id) {
+    public User getUserById(Long id) {
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return userFactory.createUser(user);
+        return user;
     }
 
     @Transactional
@@ -42,21 +42,22 @@ public class UserService {
         return user;
     }
 
-    public void deleteUser(String id) {
+    public void deleteUser(Long id) {
         userRepo.deleteById(id);
+        System.out.println(id + "user deleted.");
     }
 
-    public List<Ride> getUserRides(String id) {
+    public List<Ride> getUserRides(Long id) {
         Optional<User> user = userRepo.findById(id);
         if (user.isPresent()) {
             return user.get().getRides();
         }
 
-        return new ArrayList<Ride>();
+        return user.get().getRides();
     }
 
     @Transactional
-    public Void addUserRide(String id, Ride ride) {
+    public Void addUserRide(Long id, Ride ride) {
         Optional<User> user = userRepo.findById(id);
         if (!user.isPresent()) {
             throw new RuntimeException("User not found");

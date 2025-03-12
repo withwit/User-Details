@@ -14,15 +14,22 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String type;
+    @Column(name = "create_dt")
     private LocalDateTime createDt;
+    @Column(name = "update_dt")
     private LocalDateTime updateDt;
     private String name;
+    @Column(name = "mobile_number")
     private String mobileNumber;
     private String email;
+    @Column(name = "current_loc")
     private String currentLoc;
 
     @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ride> rides;
+
+    public User() {
+    }
 
     public User(String name, String type, String mobileNumber, String email, String currentLoc) {
         LocalDateTime nowDate = LocalDateTime.now();
@@ -36,10 +43,7 @@ public class User {
         this.rides = new ArrayList<>();
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updateDt = LocalDateTime.now();
-    }
+
 
 
     public Long getId() {

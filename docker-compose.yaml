@@ -7,6 +7,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: oyetaxi_db
+      POSTGRES_LOGGING: all
+    command: [ "postgres", "-c", "log_statement=all" ]  # Logs all SQL statements
     ports:
       - "5432:5432"
     volumes:
@@ -24,6 +26,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/oyetaxi_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
+    restart: always
+    volumes:
+      - ~/.m2:/root/.m2  # Mounts Maven dependencies to persist cache
 
 volumes:
   postgres_data:

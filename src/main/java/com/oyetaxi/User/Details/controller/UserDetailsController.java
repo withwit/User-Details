@@ -29,7 +29,7 @@ public class UserDetailsController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserInterface> getUserById(@PathVariable String id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
@@ -39,18 +39,18 @@ public class UserDetailsController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/rides/{id}")
-    public ResponseEntity<List<Ride>> getUserRides(@PathVariable String id) {
+    public ResponseEntity<List<Ride>> getUserRides(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserRides(id));
     }
 
     @PostMapping("/rides/{id}")
-    public ResponseEntity<Void> addUserRide(@PathVariable String id, @RequestBody Ride ride) {
+    public ResponseEntity<Void> addUserRide(@PathVariable Long id, @RequestBody Ride ride) {
         return ResponseEntity.ok(userService.addUserRide(id, ride));
     }
 

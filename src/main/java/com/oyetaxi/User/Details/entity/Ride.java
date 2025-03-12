@@ -8,9 +8,11 @@ public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(name = "driver_id")
     private Long driverId;
+    @Column(name = "location_data")
     private String locationData;
+    @Column(name = "price_estimate")
     private String priceEstimate;
     private String distance;
 
