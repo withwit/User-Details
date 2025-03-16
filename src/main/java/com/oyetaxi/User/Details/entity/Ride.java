@@ -86,7 +86,6 @@ public class Ride {
 
     @Override
     public String toString() {
-        System.out.println("ZXZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
         return "Ride{" +
                 "id=" + id +
                 ", passenger=" + passenger +

@@ -4,6 +4,8 @@ import com.oyetaxi.User.Details.dto.UserDataDTO;
 import com.oyetaxi.User.Details.entity.Driver;
 import com.oyetaxi.User.Details.entity.Ride;
 import com.oyetaxi.User.Details.entity.User;
+import com.oyetaxi.User.Details.exception.InvalidRequestException;
+import com.oyetaxi.User.Details.exception.ResourceNotFoundException;
 import com.oyetaxi.User.Details.factory.UserFactory;
 import com.oyetaxi.User.Details.misc.UserType;
 import com.oyetaxi.User.Details.repository.RideRepo;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,58 +27,65 @@ public class UserService {
     UserFactory userFactory;
 
     public User createUser(UserDataDTO dataDTO) {
+        if (dataDTO == null || dataDTO.getUser() ==null) {
+            throw new InvalidRequestException("User data cannot be null");
+        }
+
         User user = userFactory.createUser(dataDTO);
-        userRepo.save(user);
-        return user;
+        return userRepo.save(user);
     }
 
     public User getUserById(Long id) {
         return userRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
     }
 
     @Transactional
     public User updateUser(Long id, UserDataDTO dataDTO) {
         User _user = getUserById(id);
-        User userData = dataDTO.getUser();
 
+        if (dataDTO == null || dataDTO.getUser() ==null) {
+            throw new InvalidRequestException("Update data cannot be null");
+        }
+
+        User userData = dataDTO.getUser();
         _user.setUpdateDt(LocalDateTime.now());
         _user.setName(userData.getName());
         _user.setCurrentLoc(userData.getCurrentLoc());
         _user.setEmail(userData.getEmail());
 
-        //If the user is a driver, update additional fields
         if (_user instanceof Driver driver) {
             driver.setLicenseNumber(dataDTO.getLicenceNumber());
             driver.setRating(dataDTO.getRating());
         }
-        userRepo.save(_user);
-        System.out.println(_user);
-        return _user;
+        return userRepo.save(_user);
     }
 
-    public void deleteUser(Long id) {
-        getUserById(id);
+    public Boolean deleteUser(Long id) {
+        getUserById(id);  // If user is not found, exception is thrown
         userRepo.deleteById(id);
-        System.out.println(id + "user deleted.");
+        return Boolean.TRUE;
     }
 
     public List<Ride> getUserRides(Long id) {
         User user = getUserById(id);
+
         if (user.getUserType() == UserType.PASSENGER) {
             return rideRepo.findByPassengerId(id);
         } else if (user.getUserType() == UserType.DRIVER) {
             return rideRepo.findByDriverId(id);
         }
 
-        new RuntimeException("Ride not found");
-        return new ArrayList<Ride>();
+        throw new ResourceNotFoundException("No rides found for user with ID: " + id);
     }
 
     @Transactional
     public void addUserRide(Long id, Ride _ride) {
         User user = getUserById(id);
-        System.out.println(_ride.toString());
+
+        if (_ride == null || _ride.getLocationData() == null || _ride.getLocationData().isEmpty()) {
+            throw new InvalidRequestException("Ride details are incomplete");
+        }
 
         Ride ride = new Ride(_ride.getLocationData(), _ride.getPriceEstimate(), _ride.getDistance());
 
@@ -89,5 +97,4 @@ public class UserService {
 
         rideRepo.save(ride);
     }
-
 }

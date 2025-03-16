@@ -1,34 +1,36 @@
 package com.oyetaxi.User.Details.controller;
 
 import com.oyetaxi.User.Details.dto.UserDataDTO;
-import com.oyetaxi.User.Details.entity.Ride;
 import com.oyetaxi.User.Details.entity.User;
 import com.oyetaxi.User.Details.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/user")
-public class UserDetailsController {
+public class UserController {
+
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody UserDataDTO dataDTO) {
-        return ResponseEntity.ok(userService.createUser(dataDTO));
+        User createdUser = userService.createUser(dataDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserDataDTO dataDTO) {
-        return ResponseEntity.ok(userService.updateUser(id, dataDTO));
+        User updatedUser = userService.updateUser(id, dataDTO);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}")
@@ -36,16 +38,4 @@ public class UserDetailsController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/{id}/rides")
-    public ResponseEntity<List<Ride>> getUserRides(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserRides(id));
-    }
-
-    @PutMapping("/{id}/rides")
-    public void addUserRide(@PathVariable Long id, @RequestBody Ride ride) {
-        userService.addUserRide(id, ride);
-    }
-
-
 }
