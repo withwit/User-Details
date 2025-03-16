@@ -1,11 +1,10 @@
 package com.oyetaxi.User.Details.entity;
 
 
+import com.oyetaxi.User.Details.misc.UserType;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -13,7 +12,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String type;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private UserType type;
     @Column(name = "create_dt")
     private LocalDateTime createDt;
     @Column(name = "update_dt")
@@ -25,25 +27,19 @@ public class User {
     @Column(name = "current_loc")
     private String currentLoc;
 
-    @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ride> rides;
-
-    public User() {
+    protected User() {
     }
 
-    public User(String name, String type, String mobileNumber, String email, String currentLoc) {
+    protected User(User user) {
         LocalDateTime nowDate = LocalDateTime.now();
         this.createDt = nowDate;
         this.updateDt = nowDate;
-        this.name = name;
-        this.type = type;
-        this.mobileNumber = mobileNumber;
-        this.email = email;
-        this.currentLoc = currentLoc;
-        this.rides = new ArrayList<>();
+        this.name = user.name;
+        this.type = user.type;
+        this.mobileNumber = user.mobileNumber;
+        this.email = user.email;
+        this.currentLoc = user.currentLoc;
     }
-
-
 
 
     public Long getId() {
@@ -102,19 +98,12 @@ public class User {
         this.currentLoc = currentLoc;
     }
 
-    public List<Ride> getRides() {
-        return rides;
-    }
 
-    public void setRides(Ride ride) {
-        this.rides.add(ride);
-    }
-
-    public String getUserType() {
+    public UserType getUserType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(UserType type) {
         this.type = type;
     }
 
@@ -128,7 +117,6 @@ public class User {
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", email='" + email + '\'' +
                 ", currentLoc='" + currentLoc + '\'' +
-                ", rides=" + rides +
                 '}';
     }
 

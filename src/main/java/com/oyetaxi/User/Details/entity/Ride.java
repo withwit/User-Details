@@ -2,33 +2,38 @@ package com.oyetaxi.User.Details.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "rides")
 public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "driver_id")
-    private Long driverId;
+
+    @ManyToOne()
+    @JoinColumn(name = "passenger", nullable = true)  // This creates a foreign key column in Ride
+    private User passenger;  // Reference to the User entity
+
+    @ManyToOne()
+    @JoinColumn(name = "driver", nullable = true)  // This creates a foreign key column in Ride
+    private User driver;  // Reference to the User entity
+
     @Column(name = "location_data")
-    private String locationData;
+    private List<String> locationData = new ArrayList<>();
     @Column(name = "price_estimate")
     private String priceEstimate;
     private String distance;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "passenger_id", nullable = false)  // This creates a foreign key column in Ride
-    private User passenger;  // Reference to the User entity
 
     public Ride() {
     }
 
-    public Ride(User passenger, Long driverId, String locationData, String priceEstimate, String distance) {
-        this.passenger = passenger;
-        this.driverId = driverId;
-        this.locationData = locationData;
+    public Ride(List<String> locationData, String priceEstimate, String distance) {
         this.priceEstimate = priceEstimate;
         this.distance = distance;
+        this.locationData = locationData != null ? locationData : new ArrayList<>();
     }
 
     public Long getId() {
@@ -47,20 +52,20 @@ public class Ride {
         this.passenger = passenger;
     }
 
-    public Long getDriverId() {
-        return driverId;
+    public void setDriver(User driver) {
+        this.driver = driver;
     }
 
-    public void setDriverId(Long driverId) {
-        this.driverId = driverId;
+    public User getDriver() {
+        return driver;
     }
 
-    public String getLocationData() {
+    public List<String> getLocationData() {
         return locationData;
     }
 
-    public void setLocationData(String locationData) {
-        this.locationData = locationData;
+    public void setLocationData(List<String> locationData) {
+        this.locationData.add(String.valueOf(locationData));
     }
 
     public String getPriceEstimate() {
@@ -77,5 +82,18 @@ public class Ride {
 
     public void setDistance(String distance) {
         this.distance = distance;
+    }
+
+    @Override
+    public String toString() {
+        System.out.println("ZXZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
+        return "Ride{" +
+                "id=" + id +
+                ", passenger=" + passenger +
+                ", driver=" + driver +
+                ", locationData='" + locationData + '\'' +
+                ", priceEstimate='" + priceEstimate + '\'' +
+                ", distance='" + distance + '\'' +
+                '}';
     }
 }

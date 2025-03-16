@@ -1,17 +1,35 @@
 package com.oyetaxi.User.Details.entity;
 
-public class Driver implements  UserInterface{
-    private User user;
+import com.oyetaxi.User.Details.dto.UserDataDTO;
+import jakarta.persistence.Entity;
 
-    public Driver(User user)  {
-        this.user = user;
+@Entity
+public class Driver extends User {
+    private String licenseNumber;
+    private String rating;
+
+    public Driver(UserDataDTO dataDTO) {
+        super(dataDTO.getUser());
+        this.licenseNumber=dataDTO.getLicenceNumber();
+        this.rating=dataDTO.getRating();
     }
 
-    public Long getId() {
-        return user.getId();
+    public Driver() {
     }
 
-    public String getUserType() {
-        return user.getUserType();
+    public String getLicenseNumber() {
+        return licenseNumber;
+    }
+
+    public void setLicenseNumber(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
     }
 }

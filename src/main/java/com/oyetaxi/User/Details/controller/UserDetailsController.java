@@ -1,8 +1,8 @@
 package com.oyetaxi.User.Details.controller;
 
+import com.oyetaxi.User.Details.dto.UserDataDTO;
 import com.oyetaxi.User.Details.entity.Ride;
 import com.oyetaxi.User.Details.entity.User;
-import com.oyetaxi.User.Details.entity.UserInterface;
 import com.oyetaxi.User.Details.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +17,8 @@ public class UserDetailsController {
     UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserInterface> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.
-                createUser(
-                        user.getName(),
-                        user.getUserType(),
-                        user.getMobileNumber(),
-                        user.getEmail(),
-                        user.getCurrentLoc()
-                ));
+    public ResponseEntity<User> createUser(@RequestBody UserDataDTO dataDTO) {
+        return ResponseEntity.ok(userService.createUser(dataDTO));
     }
 
     @GetMapping("/{id}")
@@ -34,8 +27,8 @@ public class UserDetailsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
-        return ResponseEntity.ok(userService.updateUser(id, user));
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserDataDTO dataDTO) {
+        return ResponseEntity.ok(userService.updateUser(id, dataDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -44,14 +37,14 @@ public class UserDetailsController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/rides/{id}")
+    @GetMapping("/{id}/rides")
     public ResponseEntity<List<Ride>> getUserRides(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserRides(id));
     }
 
-    @PostMapping("/rides/{id}")
-    public ResponseEntity<Void> addUserRide(@PathVariable Long id, @RequestBody Ride ride) {
-        return ResponseEntity.ok(userService.addUserRide(id, ride));
+    @PutMapping("/{id}/rides")
+    public void addUserRide(@PathVariable Long id, @RequestBody Ride ride) {
+        userService.addUserRide(id, ride);
     }
 
 

@@ -10,18 +10,19 @@ CREATE TABLE IF NOT EXISTS "users" (
     name VARCHAR(100) NOT NULL,
     mobile_number VARCHAR(20) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    current_loc VARCHAR(100)
+    current_loc VARCHAR(100),
+    rides JSONB,
 );
 
 CREATE TABLE IF NOT EXISTS "rides" (
     id BIGSERIAL PRIMARY KEY,
-    passenger_id BIGINT NOT NULL,
-    driver_id BIGINT NOT NULL,
+    passenger BIGINT,
+    driver BIGINT,
     location_data JSONB NOT NULL,
     price_estimate VARCHAR(50),
     distance VARCHAR(50),
-    FOREIGN KEY (passenger_id) REFERENCES "users"(id) ON DELETE CASCADE,
-    FOREIGN KEY (driver_id) REFERENCES "users"(id) ON DELETE CASCADE
+    FOREIGN KEY (passenger) REFERENCES "users"(id) ON DELETE CASCADE,
+    FOREIGN KEY (driver) REFERENCES "users"(id) ON DELETE CASCADE
 );
 
 -- Trigger to update update_dt on row modification

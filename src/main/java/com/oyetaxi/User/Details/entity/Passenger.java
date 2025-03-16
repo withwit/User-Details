@@ -1,17 +1,15 @@
 package com.oyetaxi.User.Details.entity;
 
-public class Passenger implements UserInterface {
-    private User user;
+import com.oyetaxi.User.Details.dto.UserDataDTO;
+import jakarta.persistence.Entity;
 
-    public Passenger(User user) {
-        this.user = user;
+@Entity
+public class Passenger extends User {
+
+    public Passenger(UserDataDTO dataDTO) {
+        super(dataDTO.getUser());
     }
 
-    public Long getId() {
-        return user.getId();
-    }
-
-    public String getUserType() {
-        return user.getUserType();
+    public Passenger() {
     }
 }
