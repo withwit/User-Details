@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.times;
 @ExtendWith(MockitoExtension.class)
 class RideServiceTest {
 
-    @InjectMocks
+    @MockBean
     private RideService rideService; // Service under test
 
     @Mock
@@ -124,7 +125,6 @@ class RideServiceTest {
         // ✅ Verify interactions
         Mockito.verify(userService, times(1)).getUserById(userId);
     }
-
 
     // ✅ Test: Add ride for a passenger
     @Test
