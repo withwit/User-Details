@@ -86,5 +86,7 @@ class RideServiceTest {
 
         assertEquals(1, rides.size());
         assertEquals(ride.getLocationData(), rides.get(0).getLocationData());
+
+
     }
 }
