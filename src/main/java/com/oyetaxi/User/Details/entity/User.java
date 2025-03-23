@@ -3,9 +3,11 @@ package com.oyetaxi.User.Details.entity;
 
 import com.oyetaxi.User.Details.misc.UserType;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -27,8 +29,6 @@ public class User {
     @Column(name = "current_loc")
     private String currentLoc;
 
-    protected User() {
-    }
 
     protected User(User user) {
         LocalDateTime nowDate = LocalDateTime.now();
@@ -121,6 +121,9 @@ public class User {
     }
 
 
+    public String getUsername() {
+        return String.valueOf(this.id);
+    }
 }
 
 
