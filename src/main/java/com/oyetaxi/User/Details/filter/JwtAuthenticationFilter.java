@@ -1,7 +1,8 @@
-package com.oyetaxi.User.Details.config;
+package com.oyetaxi.User.Details.filter;
 
 
 import com.oyetaxi.User.Details.service.JwtService;
+import com.oyetaxi.User.Details.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
+    private  final UserService userService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
@@ -33,12 +36,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         token = token.substring(7);
-        String username = jwtService.extractUsername(token);
+        String id = jwtService.extractId(token);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = User.withUsername(username).password("").roles("USER").build();
+        com.oyetaxi.User.Details.entity.User fetchedUser = userService.getUserById(Long.valueOf(id));
 
-            if (jwtService.isTokenValid(token, username)) {
+        if (id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = User.withUsername(id).password(fetchedUser.getPassword()).roles("USER").build();
+
+            if (jwtService.validateToken(token, id)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authToken);

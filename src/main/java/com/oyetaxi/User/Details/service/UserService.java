@@ -1,5 +1,6 @@
 package com.oyetaxi.User.Details.service;
 
+import com.oyetaxi.User.Details.config.SecurityConfig;
 import com.oyetaxi.User.Details.dto.UserDataDTO;
 import com.oyetaxi.User.Details.entity.Driver;
 import com.oyetaxi.User.Details.entity.Ride;
@@ -11,6 +12,7 @@ import com.oyetaxi.User.Details.misc.UserType;
 import com.oyetaxi.User.Details.repository.RideRepo;
 import com.oyetaxi.User.Details.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +28,21 @@ public class UserService {
     @Autowired
     UserFactory userFactory;
 
+//    @Autowired
+//    SecurityConfig securityConfig;
+
+
     public User createUser(UserDataDTO dataDTO) {
-        if (dataDTO == null || dataDTO.getUser() ==null) {
+        if (dataDTO == null || dataDTO.getUser() == null) {
             throw new InvalidRequestException("User data cannot be null");
         }
 
+        // ✅ Hash the password before setting it in the entity
+//        String hashedPassword = securityConfig.passwordEncoder(dataDTO.getUser().getPassword());
+//        dataDTO.getUser().setPassword(hashedPassword);
+
         User user = userFactory.createUser(dataDTO);
+
         return userRepo.save(user);
     }
 
@@ -44,7 +55,7 @@ public class UserService {
     public User updateUser(Long id, UserDataDTO dataDTO) {
         User _user = getUserById(id);
 
-        if (dataDTO == null || dataDTO.getUser() ==null) {
+        if (dataDTO == null || dataDTO.getUser() == null) {
             throw new InvalidRequestException("Update data cannot be null");
         }
 
