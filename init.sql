@@ -12,13 +12,14 @@ CREATE TABLE IF NOT EXISTS "users" (
     email VARCHAR(100) UNIQUE NOT NULL,
     current_loc VARCHAR(100),
     rides JSONB,
+    password CHAR(68) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "rides" (
     id BIGSERIAL PRIMARY KEY,
     passenger BIGINT,
     driver BIGINT,
-    location_data JSONB NOT NULL,
+    location_data VARCHAR(255)[],
     price_estimate VARCHAR(50),
     distance VARCHAR(50),
     FOREIGN KEY (passenger) REFERENCES "users"(id) ON DELETE CASCADE,

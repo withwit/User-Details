@@ -11,8 +11,8 @@ import lombok.Setter;
 @Data
 public class LoginRequest {
 
-    @NotBlank(message = "Id is required")
-    private Long id;
+    @NotBlank(message = "Mobile number is required")
+    private String mobileNumber;
 
     @NotBlank(message = "Password is required")
     private String password;

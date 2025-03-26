@@ -1,6 +1,5 @@
 package com.oyetaxi.User.Details.service;
 
-import com.oyetaxi.User.Details.config.SecurityConfig;
 import com.oyetaxi.User.Details.dto.UserDataDTO;
 import com.oyetaxi.User.Details.entity.Driver;
 import com.oyetaxi.User.Details.entity.Ride;
@@ -28,18 +27,12 @@ public class UserService {
     @Autowired
     UserFactory userFactory;
 
-//    @Autowired
-//    SecurityConfig securityConfig;
 
-
+    @Transactional
     public User createUser(UserDataDTO dataDTO) {
         if (dataDTO == null || dataDTO.getUser() == null) {
             throw new InvalidRequestException("User data cannot be null");
         }
-
-        // ✅ Hash the password before setting it in the entity
-//        String hashedPassword = securityConfig.passwordEncoder(dataDTO.getUser().getPassword());
-//        dataDTO.getUser().setPassword(hashedPassword);
 
         User user = userFactory.createUser(dataDTO);
 
@@ -49,6 +42,11 @@ public class UserService {
     public User getUserById(Long id) {
         return userRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
+    }
+
+    public User getUserByMobileNumber(String number) {
+        return userRepo.findByMobileNumber(number)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + number));
     }
 
     @Transactional
@@ -72,6 +70,7 @@ public class UserService {
         return userRepo.save(_user);
     }
 
+    @Transactional
     public Boolean deleteUser(Long id) {
         getUserById(id);  // If user is not found, exception is thrown
         userRepo.deleteById(id);
